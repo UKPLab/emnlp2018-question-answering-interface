@@ -323,30 +323,41 @@ TheApp.draw.cvismargin = {top: 20, right: 20, bottom: 30, left: 80};
 TheApp.draw.draw_graph = function(s_g, graphSvg){
     var gvis = d3.select(graphSvg.get(0)).select("svg");
     gvis.selectAll("*").remove();
-    var nodes = {
-        0: { x:   0, y: 0, name: "Q var", class: "qnode"}
-    };
+    var nodes = [
+        { x:   0, y: 0, id: "?qvar", name:"Q var", class: "qnode"}
+    ];
+    var nodes_map = {"?qvar": true};
     s_g.edges.forEach(function(edge){
-        for (var n_i=0; n_i < nodes.length; n_i ++){
-            links.push({ source: n_i, target: nodes.length, name: edge.relationid + ":" + edge._relationstr })
-        }
-
-        nodes.push({ x:   0, y: 0, name: edge.rightentityid, class: "node"});
     });
 
     var links = [];
     s_g.edges.forEach(function(edge){
-        for (var n_i=0; n_i < nodes.length; n_i ++){
-            links.push({ source: n_i, target: nodes.length, name: edge.relationid + ":" + edge._relationstr })
+        if (edge.leftentityid){
+            links.push({ source: edge.leftentityid, target: (edge.rightentityid) ? edge.rightentityid: edge.qualifierentityid, name: edge.relationid + ":" + edge._relationstr })
+        } else {
+            links.push({ source: edge.qualifierentityid, target: edge.rightentityid, name: edge.relationid + ":" + edge._relationstr })
         }
-
-        nodes.push({ x:   0, y: 0, name: edge.rightentityid, class: "node"});
+        [edge.rightentityid, edge.leftentityid, edge.qualifierentityid].forEach(function (value) {
+            if (value && !(value in nodes_map)){
+                nodes.push({ x: 0, y: 0, id: value, name: value, class: "node"});
+                nodes_map[value] = true
+            }
+        });
+        // for (var n_i=0; n_i < nodes.length; n_i ++){
+        //     links.push({ source: n_i, target: nodes.length, name: edge.relationid + ":" + edge._relationstr })
+        // }
+        // [edge.rightentityid, edge.leftentityid, edge.qualifierentityid].forEach(function (value) {
+        //     if (value && !(value in nodes_map)){
+        //         nodes.push({ x:   0, y: 0, name: value, class: "node"});
+        //     }
+        // });
+        // nodes.push({ x:   0, y: 0, name: edge.rightentityid, class: "node"});
     });
 
     var link = gvis.selectAll('.link')
         .data(links)
         .enter().append('line')
-        .attr('class', function(d) { return ((d.source === 0) ? "link" : "link-dummy" ); });
+        .attr('class', function(d) { return "link"; });
 
     var width = graphSvg.find("svg").innerWidth(), height = graphSvg.find("svg").innerHeight();
     var force = d3.forceSimulation()
@@ -383,7 +394,7 @@ TheApp.draw.draw_graph = function(s_g, graphSvg){
     var reltext = gvis.selectAll(".rel-label")
         .data(links).enter()
         .append("g")
-        .filter(function(d) { return d.source === 0; })
+        // .filter(function(d) { return d.source === "?qvar"; })
         .attr('class', "rel-label");
     reltext.append("rect")
         .attr("x", 0)
@@ -412,8 +423,11 @@ TheApp.draw.draw_graph = function(s_g, graphSvg){
     }
 
     force.nodes(nodes).on("tick", tick);
-    force.force("link", d3.forceLink(links));
+    force.force("link", d3.forceLink(links).id(function(d) { return d.id; }));
     force.force("link").distance(function(d) { return (d.source.index === 0) ? 150 : 150 ; });
+    force.force("collide", d3.forceCollide(20));
+    force.force("many-body", d3.forceManyBody());
+    force.force("many-body").strength(-300);
 
 
     function dragstarted(d) {
