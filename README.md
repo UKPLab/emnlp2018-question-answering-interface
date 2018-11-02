@@ -1,71 +1,17 @@
-# Wikidata access
+# Wikidata Knowledge Base Question Answering Web Demo
 
-## Simple API for a Wikidata SPARQL endpoint
+## Interactive Instance-based Evaluation of Knowledge Base Question Answering
 
-This is a simple API for accessing a local Wikidata SPARQL endpoint. 
-All methods generate SPARQL queries and send them to the endpoint, the result is preprocessed and returned.
+This is an accompanying repository for our **EMNLP 2018 Demo paper** ([pdf](http://aclweb.org/anthology/D18-2020)). 
+It contains the code to provide additional information about the designed web interface. 
+For Entity Linking and QA Modesl please refer to the corresponding papers and repositories ([qa paper](http://aclweb.org/anthology/C18-1280), [entity linking paper](http://aclweb.org/anthology/S18-2007)).
 
-As usual:
+Disclaimer:
 > This repository contains experimental software and is published for the sole purpose of giving additional background details on the respective publication.
  
-### Project structure:
 
-<table>
-    <tr>
-        <th>File</th><th>Description</th>
-    </tr>
-    <tr>
-        <td>wikidata/resources</td><td>Preloaded information on properties</td>
-    </tr>
-    <tr>
-        <td>wikidata/endpoint_access.py</td><td>Send a request to the KB</td>
-    </tr>
-    <tr>
-        <td>wikidata/queries.py</td><td>Main interface for KB queries</td>
-    </tr>
-    <tr>
-        <td>wikidata/scheme.py</td><td>Information about the structure of the KB, e.g frequency of properties</td>
-    </tr>
-    <tr>
-        <td>test/</td><td>Unit tests</td>
-    </tr>
-</table>
-
-
-#### Requirements:
-* Python 3.6
-
-### Usage
-
-1. Clone and install the wikipedia-access project with pip from our internal git:
-
-	```
-	pip install git+https://git.ukp.informatik.tu-darmstadt.de/sorokin/wikidata-access.git
-	```
-
-2. Use the following code to access the local Wikidata endpoint:
-
-	```python
-	from wikidata import queries, endpoint_access
-	
-	sparql_query = queries.query_get_entity_by_label("Barack Obama")  # Get a sparql query to retrieve all entities with "Barack Obama" in the label
-	entities = endpoint_access.query_wikidata(sparql_query)  # Execute the query against Wikidata
-	```
-
-### Further usage notes
-
- - The current endpoint is "http://knowledgebase:8890/sparql" that is only accessible from inside the UKP network
- - You can change the sparql endpoint with `endpoint_access.set_backend("new_url")`
- - The Wikidata dump was created with [Wikidata Toolkit](http://tools.wmflabs.org/wikidata-exports/rdf/). You can read more about different Wikidata RDF dumps [here](https://www.wikidata.org/wiki/Wikidata:Database_download).
- - It won't work with the official online Wikidata endpoint for SPAQRL queries, since they have a different dump structure! 
- - The API is not stable, but generally methods fall into two categories:
- 	- Methods that start with `get_` or `map_` will send a query, preprocess the results and return them in some structured form
- 	- Methods that start with `query_` generate a SPARQL query and return it as a string. You have to use `endpoint_access.query_wikidata` to execute the query yourself.
- 	- (DS: I might streamline it at some point this summer)
- - Most methods in `query.py` have doctest that you consult to get an idea of how to use the method
- 
- 
- 
+### Demo URL
+* http://semanticparsing.ukp.informatik.tu-darmstadt.de:5000/question-answering/
 
 ### Contacts:
 If you have any questions regarding the code, please, don't hesitate to contact the authors or report an issue.
