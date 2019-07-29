@@ -4,7 +4,7 @@
 
 This is an accompanying repository for our **EMNLP 2018 Demo paper** ([pdf](http://aclweb.org/anthology/D18-2020)). 
 It contains the code to provide additional information about the designed web interface. 
-For Entity Linking and QA Modesl please refer to the corresponding papers and repositories ([qa paper](http://aclweb.org/anthology/C18-1280), [entity linking paper](http://aclweb.org/anthology/S18-2007)).
+For Entity Linking and QA Models please refer to the corresponding papers and repositories ([qa paper](http://aclweb.org/anthology/C18-1280), [entity linking paper](http://aclweb.org/anthology/S18-2007)).
 
 Disclaimer:
 > This repository contains experimental software and is published for the sole purpose of giving additional background details on the respective publication.
